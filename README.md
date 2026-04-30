@@ -8,9 +8,12 @@ A simple command-line todo list application built with Node.js.
 - Node.js installed on your system
 
 ### Installation
-1. Clone the project
-2. Ensure Node.js is installed
-3. Start the application:
+1. Clone the repository
+```bash
+git clone https://github.com/0xlam/todo-cli.git
+cd todo-cli
+```
+2. Run the application:
 ```bash
 node app.js
 ```
