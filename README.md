@@ -8,11 +8,11 @@ A simple command-line todo list application built with Node.js.
 - Node.js installed on your system
 
 ### Installation
-1. Save the code to a file (e.g., `todo.js`)
-2. Open your terminal
-3. Run the application:
+1. Clone the project
+2. Ensure Node.js is installed
+3. Start the application:
 ```bash
-node todo.js
+node app.js
 ```
 
 ## Available Commands
@@ -24,6 +24,7 @@ node todo.js
 | `done <id>` | Mark a task as completed |
 | `undo <id>` | Mark a task as not completed |
 | `remove <id>` | Delete a task |
+| `edit <id> <new text>` | Edit task text |
 | `clear` | Delete all tasks |
 | `stats` | Show task statistics |
 | `help` | Show available commands |
@@ -52,17 +53,18 @@ todo> stats
 # Total: 2 | Completed: 1 | Pending: 1
 
 todo> exit
-# Session closed.
+# Saving tasks...
+# Saved 2 task(s) to tasks.json.
+# Goodbye.
+
 ```
 
 ## Notes
 
-- Tasks are stored in memory (the `tasks` array).
-- Once you exit the program, all tasks are lost.
+- Tasks are stored in a file
 - Task IDs restart after `clear`.
 
 ## Future Improvements
 
-- Save tasks to a JSON file so they persist after exit.
 - Add a `search` command.
 - Improve output formatting for better readability.
