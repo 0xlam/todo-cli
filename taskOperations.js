@@ -80,6 +80,40 @@ function list(){
 	console.log("---------------------------");
 }
 
+function filter(status) {
+    let filtered_tasks = [];
+
+    if (status === "done") {
+        console.log("Completed tasks:");
+        console.log("---------------------------");
+        filtered_tasks = state.tasks.filter(task => task.done);
+    }
+    else if (status === "pending") {
+        console.log("Pending tasks:");
+        console.log("---------------------------");
+        filtered_tasks = state.tasks.filter(task => !task.done);
+    }
+    else {
+        console.log("Invalid filter status. Use 'done' or 'pending'.");
+        return;
+    }
+
+    for (let task of filtered_tasks) {
+        let box = task.done ? "[x]" : "[ ]";
+        console.log(`[${task.id}] ${box} ${task.text}`);
+    }
+
+    console.log("---------------------------");
+
+    if (status === "done") {
+        console.log(`Total completed: ${filtered_tasks.length}`);
+    }
+    else {
+        console.log(`Total pending: ${filtered_tasks.length}`);
+    }
+}
+
+
 function remove(task_id){
 	let index;
 	let task_text;
@@ -125,6 +159,7 @@ function help() {
     console.log("║  undo <id>            - Mark task undone ║");
     console.log("║  remove <id>          - Delete a task    ║");
     console.log("║  edit <id> <new text> - Edit task text   ║");
+    console.log("║  filter <done|pending> - Filter by status║");
     console.log("║  clear                - Delete all tasks ║");
     console.log("║  stats                - Show task stats  ║");
     console.log("║  help                 - Show this menu   ║");
@@ -132,4 +167,4 @@ function help() {
     console.log("╚══════════════════════════════════════════╝\n");
 }
 
-export { add, list, done, undo, remove, edit, clear, stats, help}
+export { add, list, done, undo, remove, filter, edit, clear, stats, help}

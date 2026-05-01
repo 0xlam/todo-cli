@@ -1,5 +1,5 @@
 import { isWhitespace } from "./utils.js"
-import {  add, list, done, undo, remove, edit, clear, stats, help } from "./taskOperations.js"
+import {  add, list, done, undo, remove, filter, edit, clear, stats, help } from "./taskOperations.js"
 import { writeTask } from "./fileHandlers.js"
 import { filename } from "./store.js"
 
@@ -7,11 +7,12 @@ function parseCommand(input){
 	let [command, ...rest] = input.split(" ");
 	let task_text = rest.join(" ");
 	let task_id = Number(task_text);
+    let status = task_text;
     
     
     const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
     const TasksWithDigitArgument = ["done", "remove", "search", "undo"] ;
-    const TaskOperations = ["add", "edit", ...TasksWithDigitArgument, ...TasksWithNoArgument];
+    const TaskOperations = ["add", "edit", "filter", ...TasksWithDigitArgument, ...TasksWithNoArgument];
 
     if ( !TaskOperations.includes(command) ){
     	console.log("Invalid command: " + command)
@@ -23,6 +24,16 @@ function parseCommand(input){
     	console.log(`Error: "${command}" does not take any arguments`);
     	console.log(`Usage: ${command}`)
     	return;
+    }
+
+    if ( command == "filter"){
+        let validStatus = ["done", "pending"];
+
+        if ( ! validStatus.includes(status) ){
+            console.log(`Error: Invalid status '${status}'.`);
+            console.log("Usage: filter <done|pending>");
+            return;
+        }
     }
 
     if ( command == "edit" ){
@@ -86,6 +97,9 @@ function parseCommand(input){
     	case "list":
     	    list();
     	    break;
+        case "filter":
+            filter(status);
+            break;
     	case "undo":
     	    undo(task_id);
     	    writeTask(filename);
