@@ -28,6 +28,7 @@ node app.js
 | `undo <id>` | Mark a task as not completed |
 | `remove <id>` | Delete a task |
 | `edit <id> <new text>` | Edit task text |
+| `filter <done\|pending>` | Filter tasks by completion status |
 | `clear` | Delete all tasks |
 | `stats` | Show task statistics |
 | `help` | Show available commands |
