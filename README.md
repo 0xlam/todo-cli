@@ -24,7 +24,7 @@ node app.js
 |---------|-------------|
 | `add <task text>` | Add a new task |
 | `list` | Show all tasks |
-| `done <id>` | Mark a task as completed |
+| `done <id>[,id2,...]` | Mark one or more tasks as completed |
 | `undo <id>` | Mark a task as not completed |
 | `remove <id>` | Delete a task |
 | `edit <id> <new text>` | Edit task text |
@@ -43,22 +43,27 @@ todo> add Buy groceries
 todo> add Walk the dog
 # Task added successfully: [2] Walk the dog
 
+todo> add Write report
+# Task added successfully: [3] Write report
+
 todo> list
 # Your tasks:
 # ---------------------------
 # [1] [ ] Buy groceries
 # [2] [ ] Walk the dog
+# [3] [ ] Write report
 # ---------------------------
 
-todo> done 1
+todo> done 1,3
 # Task marked as completed: [1] Buy groceries
+# Task marked as completed: [3] Write report
 
 todo> stats
-# Total: 2 | Completed: 1 | Pending: 1
+# Total: 3 | Completed: 2 | Pending: 1
 
 todo> exit
 # Saving tasks...
-# Saved 2 task(s) to tasks.json.
+# Saved 3 task(s) to tasks.json.
 # Goodbye.
 
 ```
