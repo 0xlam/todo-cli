@@ -2,18 +2,35 @@ import { isWhitespace } from "./utils.js"
 import { writeTask } from "./fileHandlers.js"
 import { state, filename } from "./store.js"
 import { parseCommand } from "./commandParser.js"
+import { executeCommand } from "./commandExecutor.js"
 import readline from "readline"
 
 const rl = readline.createInterface({
-	input : process.stdin,
+      input : process.stdin,
 	output : process.stdout
 })
 
+// Commands that do not modify data
+const readonlyCommands = ["list", "stats", "help", "filter"];
+
 function ask(){
-	rl.question("todo> ", 
-		(input) => { 
-            if ( input === "exit"){
-            	console.log("Saving tasks...");
+      rl.question("todo> ", (input) => {
+            if (isWhitespace(input)){
+                  ask();
+                  return;
+            }
+
+            const parsed = parseCommand(input);
+
+            if (!parsed.valid) {
+                  console.log(parsed.error);
+                  ask();
+                  return;
+            }
+
+
+            if ( parsed.command === "exit"){
+                  console.log("Saving tasks...");
             	if (writeTask(filename)){
             		console.log(`Saved ${state.tasks.length} task(s) to ${filename}.`);
             	}
@@ -22,17 +39,20 @@ function ask(){
             	}
             	console.log("Goodbye.");
 	            rl.close();
+                  return;
             }
-            else if (!isWhitespace(input)){
-            	parseCommand(input);
-            	ask();
+
+            // Execute the command
+            executeCommand(parsed);
+
+            // Save if the command modified data
+            if (!readonlyCommands.includes(parsed.command)) {
+                  writeTask(filename);
             }
-            else{
-            	ask();
-            }
-					
-		}
-	)
+
+            ask();
+
+      });
 }
 
 export { ask };
