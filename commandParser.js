@@ -1,120 +1,159 @@
 import { isWhitespace } from "./utils.js"
-import {  add, list, done, undo, remove, filter, edit, clear, stats, help } from "./taskOperations.js"
-import { writeTask } from "./fileHandlers.js"
-import { filename } from "./store.js"
+
 
 function parseCommand(input){
 	let [command, ...rest] = input.split(" ");
 	let task_text = rest.join(" ");
 	let task_id = Number(task_text);
+	let task_ids = [];
     let status = task_text;
     
     
     const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
-    const TasksWithDigitArgument = ["done", "remove", "search", "undo"] ;
-    const TaskOperations = ["add", "edit", "filter", ...TasksWithDigitArgument, ...TasksWithNoArgument];
+    const TasksWithDigitArgument = ["remove", "undo"] ;
+    const TaskOperations = ["add", "edit", "filter", "done", ...TasksWithDigitArgument, ...TasksWithNoArgument];
 
+    
+     // Unknown command
     if ( !TaskOperations.includes(command) ){
-    	console.log("Invalid command: " + command)
-    	console.log("Type \"help\" to see available commands.")
-    	return;
+    	return {
+    		valid: false,
+    		error: `Invalid command: ${command}\nType "help" to see available commands.`
+        };
     }
+
 
     if ( TasksWithNoArgument.includes(command) && !isWhitespace(task_text) ){
-    	console.log(`Error: "${command}" does not take any arguments`);
-    	console.log(`Usage: ${command}`)
-    	return;
+    	return {
+    		valid: false,
+    		error: `Error: "${command}" does not take any arguments\nUsage: ${command}`
+ 		};
     }
 
-    if ( command == "filter"){
-        let validStatus = ["done", "pending"];
-
-        if ( ! validStatus.includes(status) ){
-            console.log(`Error: Invalid status '${status}'.`);
-            console.log("Usage: filter <done|pending>");
-            return;
+    
+    // Commands that take a single digit argument (remove, undo)
+    if (TasksWithDigitArgument.includes(command)) {
+        if (isWhitespace(task_text)) {
+            return {
+                valid: false,
+                error: `Error: Missing task ID.\nUsage: ${command} <task id>`
+            };
         }
+        if (isNaN(task_id)) {
+            return {
+                valid: false,
+                error: `Error: Invalid task ID "${task_text}". Task ID must be a number.\nUsage: ${command} <task id>`
+            };
+        }
+
+        return {
+            valid: true,
+            command: command,
+            payload: { id: task_id }
+        };
+    }
+    
+    // add command 
+    if (command === "add") {
+        if (isWhitespace(task_text)) {
+            return {
+                valid: false,
+                error: "Error: Task text cannot be empty.\nUsage: add <task text>"
+            };
+        }
+        return {
+            valid: true,
+            command: "add",
+            payload: { text: task_text }
+        };
+    }
+    
+    // edit command
+    if (command === "edit") {
+        let id = rest.shift();
+        let edit_id = Number(id);
+        let newText = rest.join(" ").trim();
+
+        if (isNaN(edit_id)) {
+            return {
+                valid: false,
+                error: `Error: Invalid task ID "${id}". Task ID must be a number.\nUsage: edit <task id> <new text>`
+            };
+        }
+        if (isWhitespace(newText)) {
+            return {
+                valid: false,
+                error: "Error: Task text cannot be empty.\nUsage: edit <task id> <new text>"
+            };
+        }
+        return {
+            valid: true,
+            command: "edit",
+            payload: { id: edit_id, newText: newText }
+        };
+    }
+    
+    //filter command
+    if (command === "filter") {
+        let validStatus = ["done", "pending"];
+        if (!validStatus.includes(status)) {
+            return {
+                valid: false,
+                error: `Error: Invalid status '${status}'.\nUsage: filter <done|pending>`
+            };
+        }
+        return {
+            valid: true,
+            command: "filter",
+            payload: { status: status }
+        };
     }
 
-    if ( command == "edit" ){
-    	let id = rest.shift();
-    	task_id = Number(id);
-    	task_text = rest.join(" ");
+    //done command
+    if (command === "done") {
+        if (isWhitespace(task_text)) {
+            return {
+                valid: false,
+                error: "Error: Missing task ID(s).\nUsage: done <id>[,id2,...]"
+            };
+        }
 
-    	if ( isNaN(task_id) ){
-    		console.log(`Error: Invalid task ID "${id}". Task ID must be a number`);
-    		console.log(`Usage: ${command} <task id> <new text>`);
-    		return;
-    	}
+        const rawIds = task_text.split(",");
+        const invalidIds = [];
+        const ids = [];
 
-    	else if ( isWhitespace(task_text) ){
-    		console.log("Error: Task text cannot be empty.");
-    		console.log(`Usage: ${command} <task id> <new text>`);
-    		return;
-    	}
+        for (let raw of rawIds) {
+            const id = Number(raw.trim());
+            if (isNaN(id)) {
+                invalidIds.push(raw.trim());
+            } else {
+                ids.push(id);
+            }
+        }
 
+        if (invalidIds.length > 0) {
+            const invalidList = invalidIds.join(", ");
+            return {
+                valid: false,
+                error: `Error: Invalid task ID(s): "${invalidList}". IDs must be numbers.\nUsage: done <id>[,id2,...]`
+            };
+        }
 
+        return {
+            valid: true,
+            command: "done",
+            payload: { ids: ids }
+        };
     }
 
-    if ( TasksWithDigitArgument.includes(command) ){
-    	if ( isNaN(task_id) ){
-    		console.log(`Error: Invalid task ID "${task_text}". Task ID must be a number`)
-    		console.log(`Usage: ${command} <task id>`)
-    		return;
-    	}
-    	else if (isWhitespace(task_text)){
-    		console.log("Error: Missing task ID.")
-    		console.log(`Usage: ${command} <task id>`)
-    		return;
-    	}
-
-    }
-
-    if ( command == "add" && isWhitespace(task_text) ){
-		    console.log("Error: Task text cannot be empty.");
-		    console.log("Usage: add <task text>");
-		    return;
-	    }
-
-	
-    switch (command){
-    	case "add":
-    		add(task_text);
-    		writeTask(filename);
-    		break;
-    	case "edit":
-    	    edit(task_id, task_text);
-    	    writeTask(filename);
-    	    break;
-    	case "done":
-    	    done(task_id);
-    	    writeTask(filename);
-    	    break;
-    	case "remove":
-    	    remove(task_id);
-    	    writeTask(filename);
-    	    break;
-    	case "list":
-    	    list();
-    	    break;
-        case "filter":
-            filter(status);
-            break;
-    	case "undo":
-    	    undo(task_id);
-    	    writeTask(filename);
-    	    break;
-    	case "clear":
-    	    clear();
-    	    writeTask(filename);
-    	    break;
-    	case "stats":
-    	    stats();
-    	    break;
-    	case "help":
-    	    help();
-    	    break;
-
+    if ( TasksWithNoArgument.includes(command)) {
+        return {
+            valid: true,
+            command: command,
+            payload: null
+        };
     }
 }
-export { parseCommand }
+
+
+export { parseCommand };
