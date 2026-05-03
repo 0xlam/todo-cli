@@ -12,23 +12,33 @@ function add(task_text){
 	state.next_id += 1; 
 }
 
-function done(task_id){
-	let task = state.tasks.find(t => t.id == task_id);
+function done(task_ids){
 
-	if (task){
-		if (task.done){
-			console.log(`Task is already completed. [${task.id}] ${task.text}`)
+	function _done(task_id){
+		let task = state.tasks.find(t => t.id == task_id);
+
+		if (task){
+			if (task.done){
+				console.log(`Task is already completed. [${task.id}] ${task.text}`)
+			}
+			else{
+				task.done = true;
+				console.log(`Task marked as completed: [${task.id}] ${task.text}`)
+
+			}
 		}
-		else{
-			task.done = true;
-			console.log(`Task marked as completed: [${task.id}] ${task.text}`)
 
+		else{
+			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
 		}
 	}
 
-	else{
-		console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-	}	
+
+	for (let task_id of task_ids){
+		_done(task_id);
+	}
+
+		
 }
 
 function undo(task_id){
@@ -136,7 +146,7 @@ function clear(){
 		return;
 	}
 
-	tasks.length = 0;
+	state.tasks.length = 0;
 	state.next_id = 1;
 	console.log("All tasks have been cleared successfully.")
 }
