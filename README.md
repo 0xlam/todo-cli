@@ -25,8 +25,8 @@ node app.js
 | `add <task text>` | Add a new task |
 | `list` | Show all tasks |
 | `done <id>[,id2,...]` | Mark one or more tasks as completed |
-| `undo <id>` | Mark a task as not completed |
-| `remove <id>` | Delete a task |
+| `undo <id>[,id2,...]` | Mark one or more tasks as not completed |
+| `remove <id>[,id2,...]` | Delete one or more tasks |
 | `edit <id> <new text>` | Edit task text |
 | `filter <done\|pending>` | Filter tasks by completion status |
 | `clear` | Delete all tasks |
