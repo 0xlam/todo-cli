@@ -16,7 +16,7 @@ function executeCommand(parsed){
     	    done(parsed.payload.ids);
     	    break;
     	case "remove":
-    	    remove(parsed.payload.id);
+    	    remove(parsed.payload.ids);
     	    break;
     	case "list":
     	    list();
@@ -25,7 +25,7 @@ function executeCommand(parsed){
             filter(parsed.payload.status);
             break;
     	case "undo":
-    	    undo(parsed.payload.id);
+    	    undo(parsed.payload.ids);
     	    break;
     	case "clear":
     	    clear();
