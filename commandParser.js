@@ -10,8 +10,7 @@ function parseCommand(input){
     
     
     const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
-    const TasksWithDigitArgument = ["remove", "undo"] ;
-    const TaskOperations = ["add", "edit", "filter", "done", ...TasksWithDigitArgument, ...TasksWithNoArgument];
+    const TaskOperations = ["add", "edit", "filter", "done", "remove", "undo", ...TasksWithNoArgument];
 
     
      // Unknown command
@@ -30,28 +29,6 @@ function parseCommand(input){
  		};
     }
 
-    
-    // Commands that take a single digit argument (remove, undo)
-    if (TasksWithDigitArgument.includes(command)) {
-        if (isWhitespace(task_text)) {
-            return {
-                valid: false,
-                error: `Error: Missing task ID.\nUsage: ${command} <task id>`
-            };
-        }
-        if (isNaN(task_id)) {
-            return {
-                valid: false,
-                error: `Error: Invalid task ID "${task_text}". Task ID must be a number.\nUsage: ${command} <task id>`
-            };
-        }
-
-        return {
-            valid: true,
-            command: command,
-            payload: { id: task_id }
-        };
-    }
     
     // add command 
     if (command === "add") {
@@ -109,12 +86,12 @@ function parseCommand(input){
         };
     }
 
-    //done command
-    if (command === "done") {
+    //done,undo,remove command
+    if ( ["done","undo","remove"].includes(command) ) {
         if (isWhitespace(task_text)) {
             return {
                 valid: false,
-                error: "Error: Missing task ID(s).\nUsage: done <id>[,id2,...]"
+                error: `Error: Missing task ID(s).\nUsage: ${command} <id>[,id2,...]`
             };
         }
 
@@ -139,10 +116,12 @@ function parseCommand(input){
             };
         }
 
+
+
         return {
             valid: true,
-            command: "done",
-            payload: { ids: ids }
+            command: command,
+            payload: { ids: new Set(ids) }
         };
     }
 
