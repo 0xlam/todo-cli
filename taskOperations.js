@@ -41,23 +41,31 @@ function done(task_ids){
 		
 }
 
-function undo(task_id){
-	let task = state.tasks.find(t => t.id == task_id);
+function undo(task_ids){
 
-	if (task){
-		if (!task.done){
-			console.log(`Task is already uncompleted: [${task.id}] ${task.text}`)
+	function _undo(task_id){
+		let task = state.tasks.find(t => t.id == task_id);
+
+		if (task){
+			if (!task.done){
+				console.log(`Task is already uncompleted: [${task.id}] ${task.text}`)
+			}
+			else{
+				task.done = false;
+				console.log(`Task marked as not completed: [${task.id}] ${task.text}`)
+
+			}
 		}
+
 		else{
-			task.done = false;
-			console.log(`Task marked as not completed: [${task.id}] ${task.text}`)
-
-		}
+			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
+		}	
 	}
 
-	else{
-		console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-	}	
+	for (let task_id of task_ids){
+		_undo(task_id);
+	}
+
 }
 
 function edit(task_id, new_text){
@@ -124,20 +132,27 @@ function filter(status) {
 }
 
 
-function remove(task_id){
-	let index;
-	let task_text;
+function remove(task_ids){
 
-	index = state.tasks.findIndex(t => t.id === task_id);
-	task_text = state.tasks[index].text;
+	function _remove(task_id){
+		let index;
+		let task_text;
 
-	if (index != -1){
-		state.tasks.splice(index, 1);
-		console.log(`Task removed successfully: [${task_id}] ${task_text}`)
+		index = state.tasks.findIndex(t => t.id === task_id);
+		task_text = state.tasks[index].text;
+
+		if (index != -1){
+			state.tasks.splice(index, 1);
+			console.log(`Task removed successfully: [${task_id}] ${task_text}`)
+		}
+		else{
+			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
+		}	
 	}
-	else{
-		console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-	}	
+
+	for (let task_id of task_ids){
+		_remove(task_id);
+	}
 }
 
 function clear(){
@@ -160,21 +175,21 @@ function stats(){
 }
 
 function help() {
-    console.log("\n╔══════════════════════════════════════════╗");
-    console.log("║           AVAILABLE COMMANDS             ║");
-    console.log("╠══════════════════════════════════════════╣");
-    console.log("║  add <task text>      - Add a new task   ║");
-    console.log("║  list                 - Show all tasks   ║");
-    console.log("║  done <id>            - Mark task done   ║");
-    console.log("║  undo <id>            - Mark task undone ║");
-    console.log("║  remove <id>          - Delete a task    ║");
-    console.log("║  edit <id> <new text> - Edit task text   ║");
-    console.log("║  filter <done|pending> - Filter by status║");
-    console.log("║  clear                - Delete all tasks ║");
-    console.log("║  stats                - Show task stats  ║");
-    console.log("║  help                 - Show this menu   ║");
-    console.log("║  exit                 - Close the app    ║");
-    console.log("╚══════════════════════════════════════════╝\n");
+    console.log("\n╔═════════════════════════════════════════════════════╗");
+    console.log("║                 AVAILABLE COMMANDS                  ║");
+    console.log("╠═════════════════════════════════════════════════════╣");
+    console.log("║  add <task text>               - Add a new task     ║");
+    console.log("║  list                          - Show all tasks     ║");
+    console.log("║  done <id>[,id2,...]           - Mark task(s) done  ║");
+    console.log("║  undo <id>[,id2,...]           - Mark task(s) undone║");
+    console.log("║  remove <id>[,id2,...]         - Delete task(s)     ║");
+    console.log("║  edit <id> <new text>          - Edit task text     ║");
+    console.log("║  filter <done|pending>         - Filter by status   ║");
+    console.log("║  clear                         - Delete all tasks   ║");
+    console.log("║  stats                         - Show task stats    ║");
+    console.log("║  help                          - Show this menu     ║");
+    console.log("║  exit                          - Close the app      ║");
+    console.log("╚═════════════════════════════════════════════════════╝\n");
 }
 
 export { add, list, done, undo, remove, filter, edit, clear, stats, help}
