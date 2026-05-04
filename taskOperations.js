@@ -139,9 +139,9 @@ function remove(task_ids){
 		let task_text;
 
 		index = state.tasks.findIndex(t => t.id === task_id);
-		task_text = state.tasks[index].text;
 
 		if (index != -1){
+			task_text = state.tasks[index].text;
 			state.tasks.splice(index, 1);
 			console.log(`Task removed successfully: [${task_id}] ${task_text}`)
 		}
