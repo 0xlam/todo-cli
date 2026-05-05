@@ -42,6 +42,21 @@ function ask(){
                   return;
             }
 
+            if ( parsed.command === "clear"){
+                  rl.question("Are you sure you want to delete all tasks? (y/n): ", (answer) => {
+                        if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
+                              executeCommand(parsed);
+                              writeTask(filename);
+                        }
+                        else{
+                              console.log("Clear cancelled.");
+                        }
+                        ask();
+                  });
+                  return;
+            }
+
+
             // Execute the command
             executeCommand(parsed);
 
