@@ -29,6 +29,7 @@ node app.js
 | `remove <id>[,id2,...]` | Delete one or more tasks |
 | `edit <id> <new text>` | Edit task text |
 | `filter <done\|pending>` | Filter tasks by completion status |
+| `search <text>` | Search tasks by keyword |
 | `clear` | Delete all tasks |
 | `stats` | Show task statistics |
 | `help` | Show available commands |
