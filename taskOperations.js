@@ -36,9 +36,7 @@ function done(task_ids){
 
 	for (let task_id of task_ids){
 		_done(task_id);
-	}
-
-		
+	}		
 }
 
 function undo(task_ids){
@@ -155,6 +153,48 @@ function remove(task_ids){
 	}
 }
 
+
+function search(text) {
+    const searchWords = text
+        .toLowerCase()
+        .split(" ")
+        .filter(w => w.length > 0);
+
+    const results = [];
+
+    for (let i = 0; i < state.tasks.length; i++) {
+        const taskLower = state.tasks[i].text.toLowerCase();
+        let totalMatch = 0;
+
+        for (let word of searchWords) {
+            if (taskLower.includes(word)) {
+            totalMatch += 1;
+            }
+        }
+
+        if (totalMatch > 0) {
+            results.push({ match: totalMatch, index: i });
+        }
+    }
+
+    if (results.length === 0) {
+        console.log(`No tasks found matching "${text}".`);
+        return;
+    }
+
+    results.sort((a, b) => b.match - a.match);
+
+    console.log(`Found ${results.length} task(s) matching "${text}":`);
+       console.log("---------------------------");
+       for (let result of results) {
+           const task = state.tasks[result.index];
+           const box = task.done ? "[x]" : "[ ]";
+           console.log(`[${task.id}] ${box} ${task.text}`);
+       }
+       console.log("---------------------------");
+}
+
+
 function clear(){
 	if (state.tasks.length === 0){
 		console.log("No tasks to clear.");
@@ -178,18 +218,19 @@ function help() {
     console.log("\n╔═════════════════════════════════════════════════════╗");
     console.log("║                 AVAILABLE COMMANDS                  ║");
     console.log("╠═════════════════════════════════════════════════════╣");
-    console.log("║  add <task text>               - Add a new task     ║");
-    console.log("║  list                          - Show all tasks     ║");
-    console.log("║  done <id>[,id2,...]           - Mark task(s) done  ║");
-    console.log("║  undo <id>[,id2,...]           - Mark task(s) undone║");
-    console.log("║  remove <id>[,id2,...]         - Delete task(s)     ║");
-    console.log("║  edit <id> <new text>          - Edit task text     ║");
-    console.log("║  filter <done|pending>         - Filter by status   ║");
-    console.log("║  clear                         - Delete all tasks   ║");
-    console.log("║  stats                         - Show task stats    ║");
-    console.log("║  help                          - Show this menu     ║");
-    console.log("║  exit                          - Close the app      ║");
+    console.log("║  add <task text>              - Add a new task      ║");
+    console.log("║  list                         - Show all tasks      ║");
+    console.log("║  done <id>[,id2,...]          - Mark task(s) done   ║");
+    console.log("║  undo <id>[,id2,...]          - Mark task(s) undone ║");
+    console.log("║  remove <id>[,id2,...]        - Delete task(s)      ║");
+    console.log("║  edit <id> <new text>         - Edit task text      ║");
+    console.log("║  filter <done|pending>        - Filter by status    ║");
+    console.log("║  search <text>                - Search tasks        ║");
+    console.log("║  clear                        - Delete all tasks    ║");
+    console.log("║  stats                        - Show task stats     ║");
+    console.log("║  help                         - Show this menu      ║");
+    console.log("║  exit                         - Close the app       ║");
     console.log("╚═════════════════════════════════════════════════════╝\n");
 }
 
-export { add, list, done, undo, remove, filter, edit, clear, stats, help}
+export { add, list, done, undo, remove, filter, edit, clear, search, stats, help}
