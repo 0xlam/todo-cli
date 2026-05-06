@@ -1,5 +1,5 @@
 import { filename } from "./store.js"
-import {  add, list, done, undo, remove, filter, edit, clear, stats, help } from "./taskOperations.js"
+import {  add, list, done, undo, remove, filter, edit, clear, stats, search, help } from "./taskOperations.js"
 
 function executeCommand(parsed){
 
@@ -26,6 +26,9 @@ function executeCommand(parsed){
             break;
     	case "undo":
     	    undo(parsed.payload.ids);
+    	    break;
+    	case "search":
+    	    search(parsed.payload.text);
     	    break;
     	case "clear":
     	    clear();
