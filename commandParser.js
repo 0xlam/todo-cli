@@ -10,7 +10,7 @@ function parseCommand(input){
     
     
     const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
-    const TaskOperations = ["add", "edit", "filter", "done", "remove", "undo", ...TasksWithNoArgument];
+    const TaskOperations = ["add", "edit", "filter", "done", "remove", "undo", "search", ...TasksWithNoArgument];
 
     
      // Unknown command
@@ -30,20 +30,25 @@ function parseCommand(input){
     }
 
     
-    // add command 
-    if (command === "add") {
-        if (isWhitespace(task_text)) {
-            return {
-                valid: false,
-                error: "Error: Task text cannot be empty.\nUsage: add <task text>"
-            };
-        }
-        return {
-            valid: true,
-            command: "add",
-            payload: { text: task_text }
-        };
-    }
+    // add,search command 
+	if ( ["add", "search"].includes(command) ) {
+    	const errorLabel = command === "add" ? "Task text" : "Search text";
+    	const usageLabel = command === "add" ? "task text" : "text";
+
+	    if (isWhitespace(task_text)) {
+	        return {
+	            valid: false,
+	            error: `Error: ${errorLabel} cannot be empty.\nUsage: ${command} <${usageLabel}>`
+	        };
+	    }
+
+	    return {
+	        valid: true,
+	        command: command,
+	        payload: { text: task_text }
+	    };
+	}
+    
     
     // edit command
     if (command === "edit") {
@@ -86,6 +91,10 @@ function parseCommand(input){
         };
     }
 
+    if (command === "search"){
+
+    }
+
     //done,undo,remove command
     if ( ["done","undo","remove"].includes(command) ) {
         if (isWhitespace(task_text)) {
@@ -115,8 +124,6 @@ function parseCommand(input){
                 error: `Error: Invalid task ID(s): "${invalidList}". IDs must be numbers.\nUsage: done <id>[,id2,...]`
             };
         }
-
-
 
         return {
             valid: true,
