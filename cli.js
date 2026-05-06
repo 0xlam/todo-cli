@@ -11,9 +11,9 @@ const rl = readline.createInterface({
 })
 
 // Commands that do not modify data
-const readonlyCommands = ["list", "stats", "help", "filter"];
+const readonlyCommands = ["list", "stats", "help", "filter", "search"];
 
-function ask(){
+async function ask(){
       rl.question("todo> ", (input) => {
             if (isWhitespace(input)){
                   ask();
@@ -46,7 +46,7 @@ function ask(){
                   rl.question("Are you sure you want to delete all tasks? (y/n): ", (answer) => {
                         if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
                               executeCommand(parsed);
-                              writeTask(filename);
+                              await writeTask(filename);
                         }
                         else{
                               console.log("Clear cancelled.");
@@ -62,7 +62,7 @@ function ask(){
 
             // Save if the command modified data
             if (!readonlyCommands.includes(parsed.command)) {
-                  writeTask(filename);
+                  await writeTask(filename);
             }
 
             ask();
