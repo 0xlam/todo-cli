@@ -13,61 +13,55 @@ const rl = readline.createInterface({
 // Commands that do not modify data
 const readonlyCommands = ["list", "stats", "help", "filter", "search"];
 
-async function ask(){
-      rl.question("todo> ", (input) => {
-            if (isWhitespace(input)){
-                  ask();
-                  return;
-            }
-
-            const parsed = parseCommand(input);
-
-            if (!parsed.valid) {
-                  console.log(parsed.error);
-                  ask();
-                  return;
-            }
-
-
-            if ( parsed.command === "exit"){
-                  console.log("Saving tasks...");
-            	if (writeTask(filename)){
-            		console.log(`Saved ${state.tasks.length} task(s) to ${filename}.`);
-            	}
-            	else{
-            		console.log(`Error: Failed to save ${filename}.`);
-            	}
-            	console.log("Goodbye.");
-	            rl.close();
-                  return;
-            }
-
-            if ( parsed.command === "clear"){
-                  rl.question("Are you sure you want to delete all tasks? (y/n): ", (answer) => {
-                        if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
-                              executeCommand(parsed);
-                              await writeTask(filename);
-                        }
-                        else{
-                              console.log("Clear cancelled.");
-                        }
-                        ask();
-                  });
-                  return;
-            }
-
-
-            // Execute the command
-            executeCommand(parsed);
-
-            // Save if the command modified data
-            if (!readonlyCommands.includes(parsed.command)) {
-                  await writeTask(filename);
-            }
-
+async function ask() {
+    rl.question("todo> ", async (input) => { 
+        if (isWhitespace(input)) {
             ask();
+            return;
+        }
 
-      });
+        const parsed = parseCommand(input);
+
+        if (!parsed.valid) {
+            console.log(parsed.error);
+            ask();
+            return;
+        }
+
+        if (parsed.command === "exit") {
+            console.log("Saving tasks...");
+            if (await writeTask(filename)) {   
+                console.log(`Saved ${state.tasks.length} task(s) to ${filename}.`);
+            } else {
+                console.log(`Error: Failed to save ${filename}.`);
+            }
+            console.log("Goodbye.");
+            rl.close();
+            return;
+        }
+
+        if (parsed.command === "clear") {
+            rl.question("Are you sure you want to delete all tasks? (y/n): ", async (answer) => {
+                if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
+                    executeCommand(parsed);
+                    await writeTask(filename);
+                } else {
+                    console.log("Clear cancelled.");
+                }
+                ask();
+            });
+            return;
+        }
+
+        // Execute the command
+        executeCommand(parsed);
+
+        // Save if the command modified data
+        if (!readonlyCommands.includes(parsed.command)) {
+            await writeTask(filename);
+        }
+
+        ask();
+    });
 }
-
 export { ask };
