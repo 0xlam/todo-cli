@@ -35,6 +35,28 @@ node app.js
 | `help` | Show available commands |
 | `exit` | Close the application |
 
+
+## Command Aliases (Shortcuts)
+
+You can use these shorter aliases instead of full command names:
+
+| Alias | Full Command |
+|-------|---------------|
+| `ls`  | `list`        |
+| `q`   | `exit`        |
+| `h`   | `help`        |
+| `c`   | `clear`       |
+| `st`  | `stats`       |
+| `a`   | `add`         |
+| `e`   | `edit`        |
+| `f`   | `filter`      |
+| `d`   | `done`        |
+| `rm`  | `remove`      |
+| `u`   | `undo`        |
+| `se`  | `search`      |
+
+Example: `todo> a Buy milk` works the same as `todo> add Buy milk`.
+
 ## Usage Examples
 
 ```bash
@@ -76,5 +98,4 @@ todo> exit
 
 ## Future Improvements
 
-- Add a `search` command.
 - Improve output formatting for better readability.
