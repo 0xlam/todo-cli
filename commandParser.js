@@ -2,52 +2,71 @@ import { isWhitespace } from "./utils.js"
 
 
 function parseCommand(input){
-	let [command, ...rest] = input.split(" ");
-	let task_text = rest.join(" ");
-	let task_id = Number(task_text);
-	let task_ids = [];
+    let [command, ...rest] = input.split(" ");
+    let task_text = rest.join(" ");
+    let task_id = Number(task_text);
+    let task_ids = [];
     let status = task_text;
     
     
     const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
     const TaskOperations = ["add", "edit", "filter", "done", "remove", "undo", "search", ...TasksWithNoArgument];
+    const commandAliases = {  
+        ls: "list",
+        q: "exit",
+        h: "help",
+        c: "clear",
+        st: "stats",
+        a: "add",
+        e: "edit",
+        f: "filter",
+        d: "done",
+        rm: "remove",
+        u: "undo",
+        se: "search",
+    };
+    
+
+    if ( Object.hasOwn(commandAliases, command) ){
+        let cmd = commandAliases[command]; 
+        command = cmd;
+    }
 
     
-     // Unknown command
-    if ( !TaskOperations.includes(command) ){
-    	return {
-    		valid: false,
-    		error: `Invalid command: ${command}\nType "help" to see available commands.`
+    else if ( !TaskOperations.includes(command) ){
+        return {
+            valid: false,
+            error: `Invalid command: ${command}\nType "help" to see available commands.`
         };
     }
 
 
     if ( TasksWithNoArgument.includes(command) && !isWhitespace(task_text) ){
-    	return {
-    		valid: false,
-    		error: `Error: "${command}" does not take any arguments\nUsage: ${command}`
- 		};
+        return {
+            valid: false,
+            error: `Error: "${command}" does not take any arguments\nUsage: ${command}`
+        };
     }
 
     
     // add,search command 
-	if ( ["add", "search"].includes(command) ) {
-    	const errorLabel = command === "add" ? "Task text" : "Search text";
-    	const usageLabel = command === "add" ? "task text" : "text";
+    if ( ["add", "search"].includes(command) ) {
+        const errorLabel = command === "add" ? "Task text" : "Search text";
+        const usageLabel = command === "add" ? "task text" : "text";
 
-	    if (isWhitespace(task_text)) {
-	        return {
-	            valid: false,
-	            error: `Error: ${errorLabel} cannot be empty.\nUsage: ${command} <${usageLabel}>`
-	        };
-	    }
+        if (isWhitespace(task_text)) {
+            return {
+                valid: false,
+                error: `Error: ${errorLabel} cannot be empty.\nUsage: ${command} <${usageLabel}>`
+            };
+        }
 
-	    return {
-	        valid: true,
-	        command: command,
-	        payload: { text: task_text }
-	    };
-	}
+        return {
+            valid: true,
+            command: command,
+            payload: { text: task_text }
+        };
+    }
     
     
     // edit command
