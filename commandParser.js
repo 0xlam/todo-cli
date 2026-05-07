@@ -1,6 +1,8 @@
 import { isWhitespace } from "./utils.js"
 
 
+const MAX_TASK_LENGTH = 100;
+
 function parseCommand(input){
     let [command, ...rest] = input.split(" ");
     let task_text = rest.join(" ");
@@ -61,6 +63,13 @@ function parseCommand(input){
             };
         }
 
+        if ( command === "add" && task_text.length > MAX_TASK_LENGTH  ){
+            return {
+                valid: false,
+                error: `Error: Task text exceeds ${MAX_TASK_LENGTH} characters. Please shorten it.`
+            };
+        }
+
         return {
             valid: true,
             command: command,
@@ -87,6 +96,14 @@ function parseCommand(input){
                 error: "Error: Task text cannot be empty.\nUsage: edit <task id> <new text>"
             };
         }
+
+        if ( newText.length > MAX_TASK_LENGTH ){
+            return {
+                valid: false,
+                error: `Error: Task text exceeds ${MAX_TASK_LENGTH} characters. Please shorten it.`
+            }
+        }
+
         return {
             valid: true,
             command: "edit",
