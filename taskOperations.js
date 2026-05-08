@@ -1,6 +1,6 @@
 import { state } from "./store.js"
 
-//================== Task Operations =========================
+//=================== Task Operations ==========================
 
 function add(task_text){
 	state.tasks.push({
@@ -15,7 +15,7 @@ function add(task_text){
 function done(task_ids){
 
 	function _done(task_id){
-		let task = state.tasks.find(t => t.id == task_id);
+		let task = state.tasks.find(t => t.id === task_id);
 
 		if (task){
 			if (task.done){
@@ -42,7 +42,7 @@ function done(task_ids){
 function undo(task_ids){
 
 	function _undo(task_id){
-		let task = state.tasks.find(t => t.id == task_id);
+		let task = state.tasks.find(t => t.id === task_id);
 
 		if (task){
 			if (!task.done){
@@ -67,11 +67,11 @@ function undo(task_ids){
 }
 
 function edit(task_id, new_text){
-	let task = state.tasks.find(t => t.id == task_id);
+	let task = state.tasks.find(t => t.id === task_id);
 
 	if (task){
 		let old_text = task.text;
-		if (old_text != new_text){
+		if (old_text !== new_text){
             task.text = new_text;
 		    console.log(`Task updated successfully: [${task_id}] ${old_text} -> ${new_text} `)
 		}
@@ -138,7 +138,7 @@ function remove(task_ids){
 
 		index = state.tasks.findIndex(t => t.id === task_id);
 
-		if (index != -1){
+		if (index !== -1){
 			task_text = state.tasks[index].text;
 			state.tasks.splice(index, 1);
 			console.log(`Task removed successfully: [${task_id}] ${task_text}`)
@@ -208,7 +208,7 @@ function clear(){
 
 function stats(){
 	let total_task = state.tasks.length;
-	let completed = state.tasks.filter(t => t.done == true).length;
+	let completed = state.tasks.filter(t => t.done === true).length;
 	let pending = total_task - completed;
 
 	console.log(`Total: ${total_task} | Completed: ${completed} | pending: ${pending}`)
