@@ -28,7 +28,7 @@ function validateTasks(tasks) {
             task.text === undefined ||
             task.done === undefined
         ) {
-            return { ok: false, code: "BAD_STRUCTURE" };
+            return { valid: false, code: "BAD_STRUCTURE" };
         }
 
         if (
@@ -36,7 +36,7 @@ function validateTasks(tasks) {
             typeof task.text !== "string" ||
             typeof task.done !== "boolean"
         ) {
-            return { ok: false, code: "BAD_TYPES" };
+            return { valid: false, code: "BAD_TYPES" };
         }
 
         tasksId.push(task.id);
@@ -45,10 +45,10 @@ function validateTasks(tasks) {
     const unique = new Set(tasksId);
 
     if (tasksId.length > unique.size) {
-        return { ok: false, code: "DUPLICATE_IDS" };
+        return { valid: false, code: "DUPLICATE_IDS" };
     }
 
-    return { ok: true, code: "VALID", max_id: getMaxId(unique) };
+    return { valid: true, code: "VALID", max_id: getMaxId(unique) };
 }
 
 export { isValidJson, validateTasks}
