@@ -127,9 +127,6 @@ function parseCommand(input){
         };
     }
 
-    if (command === "search"){
-
-    }
 
     //done,undo,remove command
     if ( ["done","undo","remove"].includes(command) ) {
