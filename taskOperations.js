@@ -13,9 +13,8 @@ function add(task_text){
 }
 
 function done(task_ids){
-
-	function _done(task_id){
-		let task = state.tasks.find(t => t.id === task_id);
+	task_ids.forEach(task_id => {
+		const task = state.tasks.find(t => t.id === task_id);
 
 		if (task){
 			if (task.done){
@@ -24,25 +23,18 @@ function done(task_ids){
 			else{
 				task.done = true;
 				console.log(`Task marked as completed: [${task.id}] ${task.text}`)
-
 			}
 		}
-
 		else{
 			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
 		}
-	}
-
-
-	for (let task_id of task_ids){
-		_done(task_id);
-	}		
+	});
 }
+	
 
 function undo(task_ids){
-
-	function _undo(task_id){
-		let task = state.tasks.find(t => t.id === task_id);
+	task_ids.forEach(task_id => {
+		const task = state.tasks.find(t => t.id === task_id);
 
 		if (task){
 			if (!task.done){
@@ -51,19 +43,12 @@ function undo(task_ids){
 			else{
 				task.done = false;
 				console.log(`Task marked as not completed: [${task.id}] ${task.text}`)
-
 			}
 		}
-
 		else{
 			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-		}	
-	}
-
-	for (let task_id of task_ids){
-		_undo(task_id);
-	}
-
+		}
+	});
 }
 
 function edit(task_id, new_text){
@@ -131,12 +116,9 @@ function filter(status) {
 
 
 function remove(task_ids){
-
-	function _remove(task_id){
-		let index;
+	task_ids.forEach(task_id => {	
 		let task_text;
-
-		index = state.tasks.findIndex(t => t.id === task_id);
+		const index = state.tasks.findIndex(t => t.id === task_id);
 
 		if (index !== -1){
 			task_text = state.tasks[index].text;
@@ -145,12 +127,8 @@ function remove(task_ids){
 		}
 		else{
 			console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-		}	
-	}
-
-	for (let task_id of task_ids){
-		_remove(task_id);
-	}
+		}
+	});
 }
 
 
