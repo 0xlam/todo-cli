@@ -73,7 +73,7 @@ function parseCommand(input){
         return {
             valid: true,
             command: command,
-            payload: { text: task_text }
+            payload: { text: task_text.trim() }
         };
     }
     
@@ -107,7 +107,7 @@ function parseCommand(input){
         return {
             valid: true,
             command: "edit",
-            payload: { id: edit_id, newText: newText }
+            payload: { id: edit_id, newText: newText.trim() }
         };
     }
     
