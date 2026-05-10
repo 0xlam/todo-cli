@@ -2,11 +2,13 @@ import { state } from "./store.js"
 
 //=================== Task Operations ==========================
 
-function add(task_text){
+function add(task_text, priority="medium"){
 	state.tasks.push({
 		id: state.next_id,
 		text: task_text,
-		done: false
+		done: false,
+		priority: priority,
+		createdAt: new Date()
 	});
 	console.log(`Task added successfully: [${state.next_id}] ${task_text}`)
 	state.next_id += 1; 
