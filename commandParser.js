@@ -1,4 +1,5 @@
 import { isWhitespace } from "./utils.js"
+import { isValidPriority } from "./validator.js"
 
 
 const MAX_TASK_LENGTH = 100;
@@ -11,8 +12,9 @@ function parseCommand(input){
     let status = task_text;
     
     
-    const TasksWithNoArgument = ["list", "exit", "help", "clear", "stats"];
-    const TaskOperations = ["add", "edit", "filter", "done", "remove", "undo", "search", ...TasksWithNoArgument];
+    const NoArgs = ["list", "exit", "help", "clear", "stats"];
+    const ReqArgs = ["add", "edit", "filter","done", "remove", "undo", "search"]
+    const TaskOps = [...ReqArgs, ...NoArgs];
     const commandAliases = {  
         ls: "list",
         q: "exit",
@@ -33,9 +35,8 @@ function parseCommand(input){
         let cmd = commandAliases[command]; 
         command = cmd;
     }
-
     
-    else if ( !TaskOperations.includes(command) ){
+    else if ( !TaskOps.includes(command) ){
         return {
             valid: false,
             error: `Invalid command: ${command}\nType "help" to see available commands.`
@@ -43,7 +44,38 @@ function parseCommand(input){
     }
 
 
-    if ( TasksWithNoArgument.includes(command) && !isWhitespace(task_text) ){
+    if ( ReqArgs.includes(command) && isWhitespace(task_text) ) {
+        if ( command === "search"){
+            return {
+                valid: false,
+                error: "Error: Search text cannot be empty.\nUsage: search <text>"
+            };
+        }
+
+        if ( command === "add"){
+            return {
+                valid: false,
+                error: "Error: Task text cannot be empty.\nUsage: add <task text> [--prio <low|medium|high>]"
+            };
+        }
+
+        if ( command === "edit" ) {
+            return {
+                valid: false,
+                error: "Error: Task text cannot be empty.\nUsage: edit <task id> <new text>"
+            };
+        }
+        
+        if ( ["done","undo","remove"].includes(command) ) {
+            return {
+                valid: false,
+                error: `Error: Missing task ID(s).\nUsage: ${command} <id>[,id2,...]`
+            };
+        }   
+    }
+
+
+    if ( NoArgs.includes(command) && !isWhitespace(task_text) ){
         return {
             valid: false,
             error: `Error: "${command}" does not take any arguments\nUsage: ${command}`
@@ -51,19 +83,53 @@ function parseCommand(input){
     }
 
     
-    // add,search command 
-    if ( ["add", "search"].includes(command) ) {
-        const errorLabel = command === "add" ? "Task text" : "Search text";
-        const usageLabel = command === "add" ? "task text" : "text";
+    // search command 
+    if ( command === "search" ) {
+        return {
+            valid: true,
+            command: command,
+            payload: { text: task_text.trim() }
+        };
+    }
 
-        if (isWhitespace(task_text)) {
-            return {
-                valid: false,
-                error: `Error: ${errorLabel} cannot be empty.\nUsage: ${command} <${usageLabel}>`
-            };
+    // add commnad
+    if ( command === "add" ) {
+        let priority;
+        let text = task_text.split(" ")
+
+        if ( text.includes("--prio") ){
+            let prio_index = text.findIndex(subcmd => subcmd === "--prio");
+
+            if ( text[prio_index + 1 ] === undefined ){
+                return {
+                    valid: false,
+                    error: "Missing priority value after --prio. Use low, medium, or high."
+                };
+            }
+
+            if ( ! isValidPriority(text[prio_index + 1]) ){
+                return {
+                    valid: false,
+                    error: "Invalid priority. Choose from: low, medium, high."
+                };
+            }
+
+            priority = text[prio_index + 1];
+
+            text = text.filter(w => w !== "--prio");
+            text = text.filter(w => w !== priority);
+            task_text = text.join(" ");
+
+            if ( isWhitespace(task_text) ){
+                return{
+                    valid: false,
+                    error: "Error: Task text cannot be empty.\nUsage: add <task text> [--prio <low|medium|high>]"
+                }
+            }
         }
 
-        if ( command === "add" && task_text.length > MAX_TASK_LENGTH  ){
+
+        if ( task_text.length > MAX_TASK_LENGTH ){
             return {
                 valid: false,
                 error: `Error: Task text exceeds ${MAX_TASK_LENGTH} characters. Please shorten it.`
@@ -73,7 +139,9 @@ function parseCommand(input){
         return {
             valid: true,
             command: command,
-            payload: { text: task_text.trim() }
+            payload: { 
+                text: task_text.trim(), 
+                priority: priority ? priority.toLowerCase() : "medium" }
         };
     }
     
@@ -90,18 +158,12 @@ function parseCommand(input){
                 error: `Error: Invalid task ID "${id}". Task ID must be a number.\nUsage: edit <task id> <new text>`
             };
         }
-        if (isWhitespace(newText)) {
-            return {
-                valid: false,
-                error: "Error: Task text cannot be empty.\nUsage: edit <task id> <new text>"
-            };
-        }
 
         if ( newText.length > MAX_TASK_LENGTH ){
             return {
                 valid: false,
                 error: `Error: Task text exceeds ${MAX_TASK_LENGTH} characters. Please shorten it.`
-            }
+            };
         }
 
         return {
@@ -127,16 +189,8 @@ function parseCommand(input){
         };
     }
 
-
     //done,undo,remove command
     if ( ["done","undo","remove"].includes(command) ) {
-        if (isWhitespace(task_text)) {
-            return {
-                valid: false,
-                error: `Error: Missing task ID(s).\nUsage: ${command} <id>[,id2,...]`
-            };
-        }
-
         const rawIds = task_text.split(",");
         const invalidIds = [];
         const ids = [];
@@ -165,14 +219,14 @@ function parseCommand(input){
         };
     }
 
-    if ( TasksWithNoArgument.includes(command)) {
+    if ( NoArgs.includes(command)) {
         return {
             valid: true,
             command: command,
             payload: null
         };
     }
-}
 
+}
 
 export { parseCommand };
