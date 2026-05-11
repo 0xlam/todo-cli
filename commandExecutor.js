@@ -7,7 +7,7 @@ function executeCommand(parsed){
 	
     switch (command){
     	case "add":
-    		add(parsed.payload.text);
+    		add(parsed.payload.text, parsed.payload.priority);
     		break;
     	case "edit":
     	    edit(parsed.payload.id, parsed.payload.newText);
