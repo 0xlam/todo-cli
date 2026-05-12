@@ -8,8 +8,8 @@ function isValidJson(data){
     }
 }
 
-function isValidPriority(priority){
-    return ["low", "medium", "high"].includes(priority.toLowerCase()) 
+function isValidPriority(priority) {
+  return ["low", "medium", "high"].includes(priority?.toLowerCase());
 }
 
 function isValidISODate(str){
@@ -39,7 +39,7 @@ function validateTasks(tasks) {
             typeof task.id !== "number" ||
             typeof task.text !== "string" ||
             typeof task.done !== "boolean" ||
-            !isValidPriority(task.priority) ||
+            (task.priority !== null && !isValidPriority(task.priority)) ||
             !isValidISODate(task.createdAt)
 
         ) {
