@@ -13,7 +13,7 @@ function parseCommand(input){
     
     
     const NoArgs = ["list", "exit", "help", "clear", "stats"];
-    const ReqArgs = ["add", "edit", "filter","done", "remove", "undo", "search"]
+    const ReqArgs = ["add", "edit", "filter","done", "remove", "undo", "search", "priority"]
     const TaskOps = [...ReqArgs, ...NoArgs];
     const commandAliases = {  
         ls: "list",
@@ -28,6 +28,7 @@ function parseCommand(input){
         rm: "remove",
         u: "undo",
         se: "search",
+        pri: "priority"
     };
     
 
@@ -52,7 +53,7 @@ function parseCommand(input){
             };
         }
 
-        if ( command === "add"){
+        if ( command === "add" ){
             return {
                 valid: false,
                 error: "Error: Task text cannot be empty.\nUsage: add <task text> [--prio <low|medium|high>]"
@@ -71,7 +72,14 @@ function parseCommand(input){
                 valid: false,
                 error: `Error: Missing task ID(s).\nUsage: ${command} <id>[,id2,...]`
             };
-        }   
+        }
+
+        if ( command === "priority" ){
+            return {
+                valid: false,
+                error: "Error: Missing task ID.\nUsage: priority <id> [low|medium|high|none]"
+            };
+        }
     }
 
 
@@ -141,7 +149,7 @@ function parseCommand(input){
             command: command,
             payload: { 
                 text: task_text.trim(), 
-                priority: priority ? priority.toLowerCase() : "medium" }
+                priority: priority?.toLowerCase() ?? null }
         };
     }
     
@@ -218,6 +226,40 @@ function parseCommand(input){
             payload: { ids: new Set(ids) }
         };
     }
+
+    if ( command === "priority" ){
+        task_id = Number(rest[0]);
+        let priority = rest[1];
+
+        if ( isNaN(task_id) ) {
+            return {
+                valid: false,
+                error: `Error: Invalid task ID "${idArg}". Task ID must be a number.\nUsage: priority <id> [low|medium|high|none]`
+            };
+        }
+
+        if ( priority === "none" ) {
+            return {
+                valid: true,
+                command: "priority",
+                payload: { id: task_id, priority: null }  // null means remove priority
+            };
+        }
+
+        if ( !isValidPriority(priority) ) {
+            return {
+                valid: false,
+                error: "Error: Invalid priority. Choose from: low, medium, high, none."
+            };
+        }
+
+        return {
+            valid: true,
+            command: "priority",
+            payload: { id: task_id, priority: priority }
+        };
+    }
+
 
     if ( NoArgs.includes(command)) {
         return {
