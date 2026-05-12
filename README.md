@@ -30,6 +30,7 @@ node app.js
 | `edit <id> <new text>` | Edit task text |
 | `filter <done\|pending>` | Filter tasks by completion status |
 | `search <text>` | Search tasks by keyword |
+| `priority <id> <low\|medium\|high\|none>` |	Set or remove task priority |
 | `clear` | Delete all tasks |
 | `stats` | Show task statistics |
 | `help` | Show available commands |
@@ -54,32 +55,36 @@ You can use these shorter aliases instead of full command names:
 | `rm`  | `remove`      |
 | `u`   | `undo`        |
 | `se`  | `search`      |
+| `p`  	| `priority`    |
 
 Example: `todo> a Buy milk` works the same as `todo> add Buy milk`.
 
 ## Usage Examples
 
 ```bash
-todo> add Buy groceries
-# Task added successfully: [1] Buy groceries
+todo> add Buy groceries --prio high
+# Task added successfully: [1] Buy groceries [priority: high]
 
 todo> add Walk the dog
 # Task added successfully: [2] Walk the dog
 
-todo> add Write report
-# Task added successfully: [3] Write report
+todo> add Write report --prio medium
+# Task added successfully: [3] Write report [priority: medium]
 
 todo> list
 # Your tasks:
 # ---------------------------
-# [1] [ ] Buy groceries
+# [1] [ ] Buy groceries [high]
 # [2] [ ] Walk the dog
-# [3] [ ] Write report
+# [3] [ ] Write report [medium]
 # ---------------------------
 
 todo> done 1,3
 # Task marked as completed: [1] Buy groceries
 # Task marked as completed: [3] Write report
+
+todo> priority 2 high
+# Priority for task [2] set to high.
 
 todo> stats
 # Total: 3 | Completed: 2 | Pending: 1
