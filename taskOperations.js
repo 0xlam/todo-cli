@@ -10,8 +10,13 @@ function add(task_text, priority){
 		priority: priority,
 		createdAt: new Date()
 	});
-	console.log(`Task added successfully: [${state.next_id}] ${task_text}`)
-	state.next_id += 1; 
+
+    let message = `Task added successfully: [${state.next_id}] ${task_text}`;
+    if (priority && priority !== null) {
+        message += ` [priority: ${priority}]`;
+    }
+    console.log(message);
+    state.next_id += 1;
 }
 
 function done(task_ids){
