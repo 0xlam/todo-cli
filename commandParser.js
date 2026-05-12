@@ -28,7 +28,7 @@ function parseCommand(input){
         rm: "remove",
         u: "undo",
         se: "search",
-        pri: "priority"
+        p: "priority"
     };
     
 
