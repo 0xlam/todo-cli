@@ -1,8 +1,4 @@
-import { state } from "./store.js"
-
-//=================== Task Operations ==========================
-
-function add(task_text, priority){
+function add(state, task_text, priority){
 	state.tasks.push({
 		id: state.next_id,
 		text: task_text,
@@ -19,7 +15,7 @@ function add(task_text, priority){
     state.next_id += 1;
 }
 
-function done(task_ids){
+function done(state, task_ids){
 	task_ids.forEach(task_id => {
 		const task = state.tasks.find(t => t.id === task_id);
 
@@ -39,7 +35,7 @@ function done(task_ids){
 }
 	
 
-function undo(task_ids){
+function undo(state, task_ids){
 	task_ids.forEach(task_id => {
 		const task = state.tasks.find(t => t.id === task_id);
 
@@ -58,7 +54,7 @@ function undo(task_ids){
 	});
 }
 
-function edit(task_id, new_text){
+function edit(state, task_id, new_text){
 	let task = state.tasks.find(t => t.id === task_id);
 
 	if (task){
@@ -78,7 +74,7 @@ function edit(task_id, new_text){
 }
 
 
-function list() {
+function list(state) {
     console.log("Your tasks:");
     console.log("---------------------------");
     for (let task of state.tasks) {
@@ -92,7 +88,7 @@ function list() {
     console.log("---------------------------");
 }
 
-function filter(status) {
+function filter(state, status) {
     let filtered_tasks = [];
 
     if (status === "done") {
@@ -126,7 +122,7 @@ function filter(status) {
 }
 
 
-function remove(task_ids){
+function remove(state, task_ids){
 	task_ids.forEach(task_id => {	
 		let task_text;
 		const index = state.tasks.findIndex(t => t.id === task_id);
@@ -143,7 +139,7 @@ function remove(task_ids){
 }
 
 
-function search(text) {
+function search(state, text) {
     const searchWords = text
         .toLowerCase()
         .split(" ")
@@ -184,7 +180,7 @@ function search(text) {
 }
 
 
-function clear(){
+function clear(state){
 	if (state.tasks.length === 0){
 		console.log("No tasks to clear.");
 		return;
@@ -195,7 +191,7 @@ function clear(){
 	console.log("All tasks have been cleared successfully.")
 }
 
-function stats(){
+function stats(state){
 	let total_task = state.tasks.length;
 	let completed = state.tasks.filter(t => t.done === true).length;
 	let pending = total_task - completed;
@@ -203,7 +199,7 @@ function stats(){
 	console.log(`Total: ${total_task} | Completed: ${completed} | pending: ${pending}`)
 }
 
-function priority(task_id, priority) {
+function priority(state, task_id, priority) {
     let task = state.tasks.find(t => t.id === task_id);
 
     if (task) {
