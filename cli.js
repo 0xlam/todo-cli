@@ -6,7 +6,7 @@ import { executeCommand } from "./commandExecutor.js"
 import readline from "readline"
 
 const rl = readline.createInterface({
-      input : process.stdin,
+    input : process.stdin,
 	output : process.stdout
 })
 
@@ -30,7 +30,7 @@ async function ask() {
 
         if (parsed.command === "exit") {
             console.log("Saving tasks...");
-            if (await writeTask(filename)) {   
+            if (await writeTask(state, filename)) {   
                 console.log(`Saved ${state.tasks.length} task(s) to ${filename}.`);
             } else {
                 console.log(`Error: Failed to save ${filename}.`);
@@ -44,7 +44,7 @@ async function ask() {
             rl.question("Are you sure you want to delete all tasks? (y/n): ", async (answer) => {
                 if (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes") {
                     executeCommand(parsed);
-                    await writeTask(filename);
+                    await writeTask(state, filename);
                 } else {
                     console.log("Clear cancelled.");
                 }
@@ -58,7 +58,7 @@ async function ask() {
 
         // Save if the command modified data
         if (!readonlyCommands.includes(parsed.command)) {
-            await writeTask(filename);
+            await writeTask(state, filename);
         }
 
         ask();
