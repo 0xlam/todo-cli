@@ -1,6 +1,4 @@
 import fs from "fs/promises";
-import path from "path";
-import { state } from "./store.js";
 
 const MAX_BACKUPS = 50;
 
@@ -25,7 +23,7 @@ async function loadTask(filename) {
     }
 }
 
-async function writeTask(filename) {
+async function writeTask(state, filename) {
     try {
         const data = JSON.stringify(state.tasks, null, 2);
         const tmpFile = `${filename}.tmp`;
