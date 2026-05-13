@@ -1,43 +1,44 @@
-import { filename } from "./store.js"
+import { filename, state } from "./store.js"
 import {  add, list, done, undo, remove, filter, edit, priority, clear, stats, search, help } from "./taskOperations.js"
 
 function executeCommand(parsed){
 
-    let command = parsed.command
+    let command = parsed.command;
+    let payload = parsed.payload;
 	
     switch (command){
     	case "add":
-    		add(parsed.payload.text, parsed.payload.priority);
+    		add(state, payload.text, payload.priority);
     		break;
     	case "edit":
-    	    edit(parsed.payload.id, parsed.payload.newText);
+    	    edit(state, payload.id, payload.newText);
     	    break;
     	case "done":
-    	    done(parsed.payload.ids);
+    	    done(state, payload.ids);
     	    break;
     	case "remove":
-    	    remove(parsed.payload.ids);
+    	    remove(state, payload.ids);
     	    break;
     	case "list":
-    	    list();
+    	    list(state);
     	    break;
         case "filter":
-            filter(parsed.payload.status);
+            filter(state, payload.status);
             break;
     	case "undo":
-    	    undo(parsed.payload.ids);
+    	    undo(state, payload.ids);
     	    break;
     	case "search":
-    	    search(parsed.payload.text);
+    	    search(state, payload.text);
     	    break;
         case "priority":
-            priority(parsed.payload.id, parsed.payload.priority);
+            priority(state, payload.id, payload.priority);
             break;
     	case "clear":
-    	    clear();
+    	    clear(state);
     	    break;
     	case "stats":
-    	    stats();
+    	    stats(state);
     	    break;
     	case "help":
     	    help();
