@@ -4,6 +4,24 @@ import { isValidPriority } from "./validator.js"
 
 const MAX_TASK_LENGTH = 100;
 
+function parseTaskIds(rawText){
+    const rawIds = rawText.split(",")
+    const invalidIds = [];
+    const ids = [];
+
+    for (let raw of rawIds) {
+        const id = Number(raw.trim());
+        if (isNaN(id)) {
+            invalidIds.push(raw.trim());
+        }
+        else{
+            ids.push(id);
+        }
+    }
+
+    return { ids, invalidIds}
+}
+
 function parseCommand(input){
     let [command, ...rest] = input.split(" ");
     let task_text = rest.join(" ");
@@ -199,18 +217,7 @@ function parseCommand(input){
 
     //done,undo,remove command
     if ( ["done","undo","remove"].includes(command) ) {
-        const rawIds = task_text.split(",");
-        const invalidIds = [];
-        const ids = [];
-
-        for (let raw of rawIds) {
-            const id = Number(raw.trim());
-            if (isNaN(id)) {
-                invalidIds.push(raw.trim());
-            } else {
-                ids.push(id);
-            }
-        }
+        const {ids, invalidIds} = parseTaskIds(task_text);
 
         if (invalidIds.length > 0) {
             const invalidList = invalidIds.join(", ");
@@ -228,13 +235,15 @@ function parseCommand(input){
     }
 
     if ( command === "priority" ){
-        task_id = Number(rest[0]);
-        let priority = rest[1];
+        const [idPart, priority] = task_text.trim().split(" ");
+        
+        const {ids, invalidIds} = parseTaskIds(idPart);
 
-        if ( isNaN(task_id) ) {
+        if (invalidIds.length > 0) {
+            const invalidList = invalidIds.join(", ");
             return {
                 valid: false,
-                error: `Error: Invalid task ID "${task_id}". Task ID must be a number.\nUsage: priority <id> [low|medium|high|none]`
+                error: `Error: Invalid task ID(s): "${invalidList}". IDs must be numbers.\nUsage: ${command} <id>[,id2,...] [low|medium|high|none]`
             };
         }
 
@@ -242,7 +251,7 @@ function parseCommand(input){
             return {
                 valid: true,
                 command: "priority",
-                payload: { id: task_id, priority: null }  // null means remove priority
+                payload: { ids: new Set(ids), priority: null }  // null means remove priority
             };
         }
 
@@ -256,7 +265,7 @@ function parseCommand(input){
         return {
             valid: true,
             command: "priority",
-            payload: { id: task_id, priority: priority }
+            payload: { ids: new Set(ids), priority: priority }
         };
     }
 
