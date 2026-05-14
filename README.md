@@ -30,11 +30,13 @@ node app.js
 | `edit <id> <new text>` | Edit task text |
 | `filter <done\|pending>` | Filter tasks by completion status |
 | `search <text>` | Search tasks by keyword |
-| `priority <id> <low\|medium\|high\|none>` |	Set or remove task priority |
+| `priority <id>[,id2,...] <level>` | Set or remove task priority |
 | `clear` | Delete all tasks |
 | `stats` | Show task statistics |
 | `help` | Show available commands |
 | `exit` | Close the application |
+
+> **Note:** `<level>` can be `low`, `medium`, `high`, or `none` (use `none` to remove priority).
 
 
 ## Command Aliases (Shortcuts)
