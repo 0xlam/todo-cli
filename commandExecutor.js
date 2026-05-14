@@ -32,7 +32,7 @@ function executeCommand(parsed){
     	    search(state, payload.text);
     	    break;
         case "priority":
-            priority(state, payload.id, payload.priority);
+            priority(state, payload.ids, payload.priority);
             break;
     	case "clear":
     	    clear(state);
@@ -43,7 +43,6 @@ function executeCommand(parsed){
     	case "help":
     	    help();
     	    break;
-
     }
 }
 
