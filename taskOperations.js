@@ -199,55 +199,55 @@ function stats(state){
 	console.log(`Total: ${total_task} | Completed: ${completed} | pending: ${pending}`)
 }
 
-function priority(state, task_id, priority) {
-    let task = state.tasks.find(t => t.id === task_id);
+function priority(state, task_ids, priority) { 
+    task_ids.forEach((task_id) => {
+        let task = state.tasks.find(t => t.id === task_id);
+        if (task) {
+            let old_prio = task.priority;
 
-    if (task) {
-        let old_prio = task.priority;
-
-        
-        if (priority === null) {
-            if (old_prio === null) {
-                console.log(`Task [${task_id}] already has no priority.`);
-            } else {
-                task.priority = null;
-                console.log(`Priority removed from task [${task_id}] (was ${old_prio}).`);
+            if (priority === null) {
+                if (old_prio === null) {
+                    console.log(`Task [${task_id}] already has no priority.`);
+                } else {
+                    task.priority = null;
+                    console.log(`Priority removed from task [${task_id}] (was ${old_prio}).`);
+                }
+                return;
             }
-            return;
-        }
 
-        if (old_prio === priority) {
-            console.log(`Priority for task [${task_id}] is already ${priority}.`);
-        } else if (old_prio === null) {
-            task.priority = priority;
-            console.log(`Priority for task [${task_id}] set to ${priority}.`);
+            if (old_prio === priority) {
+                console.log(`Priority for task [${task_id}] is already ${priority}.`);
+            } else if (old_prio === null) {
+                task.priority = priority;
+                console.log(`Priority for task [${task_id}] set to ${priority}.`);
+            } else {
+                task.priority = priority;
+                console.log(`Priority for task [${task_id}] changed from ${old_prio} to ${priority}.`);
+            }
         } else {
-            task.priority = priority;
-            console.log(`Priority for task [${task_id}] changed from ${old_prio} to ${priority}.`);
+            console.log(`Operation failed: task with ID ${task_id} does not exist.`);
         }
-    } else {
-        console.log(`Operation failed: task with ID ${task_id} does not exist.`);
-    }
+    });
 }
 
 function help() {
-    console.log("\n╔═════════════════════════════════════════════════════╗");
-    console.log("║                 AVAILABLE COMMANDS                  ║");
-    console.log("╠═════════════════════════════════════════════════════╣");
-    console.log("║  add <task text>              - Add a new task      ║");
-    console.log("║  list                         - Show all tasks      ║");
-    console.log("║  done <id>[,id2,...]          - Mark task(s) done   ║");
-    console.log("║  undo <id>[,id2,...]          - Mark task(s) undone ║");
-    console.log("║  remove <id>[,id2,...]        - Delete task(s)      ║");
-    console.log("║  edit <id> <new text>         - Edit task text      ║");
-    console.log("║  filter <done|pending>        - Filter by status    ║");
-    console.log("║  search <text>                - Search tasks        ║");
-    console.log("║  priority <id> <level>        - Set/remove priority ║");
-    console.log("║  clear                        - Delete all tasks    ║");
-    console.log("║  stats                        - Show task stats     ║");
-    console.log("║  help                         - Show this menu      ║");
-    console.log("║  exit                         - Close the app       ║");
-    console.log("╚═════════════════════════════════════════════════════╝\n");
+    console.log("\n╔════════════════════════════════════════════════════════╗");
+    console.log("║                 AVAILABLE COMMANDS                     ║");
+    console.log("╠════════════════════════════════════════════════════════╣");
+    console.log("║  add <task text>                 - Add a new task      ║");
+    console.log("║  list                            - Show all tasks      ║");
+    console.log("║  done <id>[,id2,...]             - Mark task(s) done   ║");
+    console.log("║  undo <id>[,id2,...]             - Mark task(s) undone ║");
+    console.log("║  remove <id>[,id2,...]           - Delete task(s)      ║");
+    console.log("║  edit <id> <new text>            - Edit task text      ║");
+    console.log("║  filter <done|pending>           - Filter by status    ║");
+    console.log("║  search <text>                   - Search tasks        ║");
+    console.log("║  priority <id>[,id2,...] <level> - Set/remove priority ║");
+    console.log("║  clear                           - Delete all tasks    ║");
+    console.log("║  stats                           - Show task stats     ║");
+    console.log("║  help                            - Show this menu      ║");
+    console.log("║  exit                            - Close the app       ║");
+    console.log("╚════════════════════════════════════════════════════════╝\n");
 }
 
 export { add, list, done, undo, remove, filter, edit, priority, clear, search, stats, help}
