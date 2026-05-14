@@ -234,7 +234,7 @@ function parseCommand(input){
         if ( isNaN(task_id) ) {
             return {
                 valid: false,
-                error: `Error: Invalid task ID "${idArg}". Task ID must be a number.\nUsage: priority <id> [low|medium|high|none]`
+                error: `Error: Invalid task ID "${task_id}". Task ID must be a number.\nUsage: priority <id> [low|medium|high|none]`
             };
         }
 
