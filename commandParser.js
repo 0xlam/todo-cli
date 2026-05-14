@@ -216,7 +216,7 @@ function parseCommand(input){
             const invalidList = invalidIds.join(", ");
             return {
                 valid: false,
-                error: `Error: Invalid task ID(s): "${invalidList}". IDs must be numbers.\nUsage: done <id>[,id2,...]`
+                error: `Error: Invalid task ID(s): "${invalidList}". IDs must be numbers.\nUsage: ${command} <id>[,id2,...]`
             };
         }
 
