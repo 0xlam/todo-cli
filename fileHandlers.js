@@ -1,6 +1,5 @@
 import fs from "fs/promises";
-
-const MAX_BACKUPS = 50;
+import { MAX_BACKUPS } from "./constants.js"
 
 async function loadTask(filename) {
     try {
@@ -86,4 +85,3 @@ async function renameFile(filename) {
 
 
 export { writeTask, loadTask, renameFile };
-
