@@ -1,5 +1,9 @@
-import { filename, state } from "./store.js"
-import {  add, list, done, undo, remove, filter, edit, priority, clear, stats, search, help } from "./taskOperations.js"
+import { state } from "./store.js"
+import {  
+    add, list, done, undo, remove,
+    filter, edit, priority, clear,
+    stats, search, help 
+} from "./taskOperations.js"
 
 function executeCommand(parsed){
 
