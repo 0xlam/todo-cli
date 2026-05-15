@@ -1,3 +1,5 @@
+import { VALID_PRIORITIES } from "./constants.js"
+
 function isValidJson(data){
     try{
         JSON.parse(data);
@@ -9,7 +11,7 @@ function isValidJson(data){
 }
 
 function isValidPriority(priority) {
-  return ["low", "medium", "high"].includes(priority?.toLowerCase());
+  return VALID_PRIORITIES.includes(priority?.toLowerCase());
 }
 
 function isValidISODate(str){
