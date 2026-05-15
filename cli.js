@@ -1,8 +1,9 @@
 import { isWhitespace } from "./utils.js"
 import { writeTask } from "./fileHandlers.js"
-import { state, filename } from "./store.js"
+import { state } from "./store.js"
 import { parseCommand } from "./commandParser.js"
 import { executeCommand } from "./commandExecutor.js"
+import { READONLY_COMMANDS, DEFAULT_TASK_FILE } from "./constants.js"
 import readline from "readline"
 
 const rl = readline.createInterface({
@@ -10,8 +11,11 @@ const rl = readline.createInterface({
 	output : process.stdout
 })
 
+const filename = DEFAULT_TASK_FILE;
+
 // Commands that do not modify data
-const readonlyCommands = ["list", "stats", "help", "filter", "search"];
+const readonlyCommands = READONLY_COMMANDS;
+
 
 async function ask() {
     rl.question("todo> ", async (input) => { 
