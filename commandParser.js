@@ -1,8 +1,18 @@
 import { isWhitespace } from "./utils.js"
 import { isValidPriority } from "./validator.js"
+import { 
+    COMMAND_ALIASES, 
+    NO_ARGS_COMMANDS, 
+    REQUIRED_ARGS_COMMANDS,
+    MAX_TASK_LENGTH,
+    VALID_FILTER_STATUSES 
+} from "./constants.js"
 
+const NoArgs = NO_ARGS_COMMANDS;
+const ReqArgs = REQUIRED_ARGS_COMMANDS;
+const TaskOps = [...ReqArgs, ...NoArgs];
+const commandAliases = COMMAND_ALIASES;
 
-const MAX_TASK_LENGTH = 100;
 
 function parseTaskIds(rawText){
     const rawIds = rawText.split(",")
@@ -18,7 +28,6 @@ function parseTaskIds(rawText){
             ids.push(id);
         }
     }
-
     return { ids, invalidIds}
 }
 
@@ -28,26 +37,6 @@ function parseCommand(input){
     let task_id = Number(task_text);
     let task_ids = [];
     let status = task_text;
-    
-    
-    const NoArgs = ["list", "exit", "help", "clear", "stats"];
-    const ReqArgs = ["add", "edit", "filter","done", "remove", "undo", "search", "priority"]
-    const TaskOps = [...ReqArgs, ...NoArgs];
-    const commandAliases = {  
-        ls: "list",
-        q: "exit",
-        h: "help",
-        c: "clear",
-        st: "stats",
-        a: "add",
-        e: "edit",
-        f: "filter",
-        d: "done",
-        rm: "remove",
-        u: "undo",
-        se: "search",
-        p: "priority"
-    };
     
 
     if ( Object.hasOwn(commandAliases, command) ){
@@ -195,14 +184,13 @@ function parseCommand(input){
         return {
             valid: true,
             command: "edit",
-            payload: { id: edit_id, newText: newText.trim() }
+            payload: { id: edit_id, newText: newText }
         };
     }
     
     //filter command
     if (command === "filter") {
-        let validStatus = ["done", "pending"];
-        if (!validStatus.includes(status)) {
+        if (!VALID_FILTER_STATUSES.includes(status)) {
             return {
                 valid: false,
                 error: `Error: Invalid status '${status}'.\nUsage: filter <done|pending>`
