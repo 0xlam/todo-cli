@@ -1,13 +1,15 @@
 import { isValidJson, validateTasks } from "./validator.js";
 import { ask } from "./cli.js";
-import { state, filename } from "./store.js";
+import { state } from "./store.js";
 import { loadTask, renameFile } from "./fileHandlers.js";
+import { DEFAULT_TASK_FILE } from "./constants.js"
 
 console.log("==========================");
 console.log("      TODO LIST CLI       ");
 console.log("==========================");
 console.log('Type "help" to see commands');
 
+const filename = DEFAULT_TASK_FILE;
 
 async function handleCorruptFile(reason) {
     console.log(`Error: Failed to load ${filename} (${reason}).`);
@@ -58,9 +60,3 @@ async function main(){
 }
 
 main();
-
-
-
-
-
-
