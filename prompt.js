@@ -3,24 +3,23 @@ import { writeTask } from "./fileHandlers.js"
 import { state } from "./store.js"
 import { parseCommand } from "./commandParser.js"
 import { executeCommand } from "./commandExecutor.js"
-import { READONLY_COMMANDS, DEFAULT_TASK_FILE } from "./constants.js"
+import { READONLY_COMMANDS } from "./constants.js"
 import readline from "readline"
 
 const rl = readline.createInterface({
     input : process.stdin,
-	output : process.stdout
+    output : process.stdout
 })
 
-const filename = DEFAULT_TASK_FILE;
 
 // Commands that do not modify data
 const readonlyCommands = READONLY_COMMANDS;
 
 
-async function ask() {
+async function ask(filename) {
     rl.question("todo> ", async (input) => { 
         if (isWhitespace(input)) {
-            ask();
+            ask(filename);
             return;
         }
 
@@ -28,7 +27,7 @@ async function ask() {
 
         if (!parsed.valid) {
             console.log(parsed.error);
-            ask();
+            ask(filename);
             return;
         }
 
@@ -52,7 +51,7 @@ async function ask() {
                 } else {
                     console.log("Clear cancelled.");
                 }
-                ask();
+                ask(filename);
             });
             return;
         }
@@ -65,7 +64,7 @@ async function ask() {
             await writeTask(state, filename);
         }
 
-        ask();
+        ask(filename);
     });
 }
 export { ask };
