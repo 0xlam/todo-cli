@@ -1,17 +1,29 @@
 import { isValidJson, validateTasks } from "./validator.js";
-import { ask } from "./cli.js";
+import { ask } from "./prompt.js";
 import { state } from "./store.js";
 import { loadTask, renameFile } from "./fileHandlers.js";
-import { DEFAULT_TASK_FILE } from "./constants.js"
+import { DEFAULT_TASK_FILE } from "./constants.js";
+import { Command } from "commander";
 
 console.log("==========================");
 console.log("      TODO LIST CLI       ");
 console.log("==========================");
 console.log('Type "help" to see commands');
 
-const filename = DEFAULT_TASK_FILE;
 
-async function handleCorruptFile(reason) {
+
+function configureCli() {
+    const program = new Command();
+
+    program
+        .name("todo")
+        .description("A simple command-line todo list application")
+        .option("-f, --file <path>", "task file", DEFAULT_TASK_FILE);
+
+    return program;
+}
+
+async function handleCorruptFile(filename, reason) {
     console.log(`Error: Failed to load ${filename} (${reason}).`);
 
     const renamed = await renameFile(filename);
@@ -28,17 +40,38 @@ async function handleCorruptFile(reason) {
 
 
 async function main(){
-	const data = await loadTask(filename);
+    const cli = configureCli();
+    cli.parse(process.argv);
 
-	if (!data) {
-       console.log("No saved task file found. Starting with an empty task list.");
-       ask();
-       return;
+    const filename = cli.opts().file;
+
+	const res = await loadTask(filename);
+
+    if (!res.ok){
+        if (res.error.code === "ENOENT") {
+            console.log(`File "${filename}" not found. Starting with an empty task list.`);
+        } 
+        else if (res.error.code === "EACCES") {
+            console.log(`Error: Permission denied reading "${filename}".`);
+        } 
+        else {
+            console.log("Unexpected error loading file:", res.error);
+        }
+        ask(filename);
+        return;
     }
 
+    const data = res.data;
+
+    if (data.trim() === ""){
+        console.log("Task file is empty. Starting with an empty task list.");
+        ask(filename);
+        return;
+    }
+    
     if (!isValidJson(data)) {
-        await handleCorruptFile("invalid or corrupted JSON");
-        ask();
+        await handleCorruptFile(filename, "invalid or corrupted JSON");
+        ask(filename);
         return;
     }
 
@@ -51,12 +84,12 @@ async function main(){
         state.next_id = result.max_id + 1;
 
         console.log(`Loaded ${state.tasks.length} task(s) from ${filename}.`);
-        ask();
+        ask(filename);
         return;
     }
 
-    await handleCorruptFile(result.code);
-    ask();
+    await handleCorruptFile(filename, result.code);
+    ask(filename);
 }
 
 main();
