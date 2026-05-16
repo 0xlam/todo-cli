@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "dependencies": {
+    "commander": "^14.0.3"
+  },
+  "name": "todo-cli",
+  "description": "A simple command-line todo list application built with Node.js.",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xlam/todo-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0xlam/todo-cli/issues"
+  },
+  "homepage": "https://github.com/0xlam/todo-cli#readme"
+}
