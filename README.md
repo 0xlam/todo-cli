@@ -13,10 +13,22 @@ A simple command-line todo list application built with Node.js.
 git clone https://github.com/0xlam/todo-cli.git
 cd todo-cli
 ```
-2. Run the application:
+2. Install dependencies
+```bash
+npm install
+```
+3. Run the application:
 ```bash
 node app.js
 ```
+
+### Using a Custom Task File
+By default, tasks are stored in `tasks.json`. You can specify a different file using the `-f` or `--file` option:
+
+```bash
+node app.js -f mytasks.json
+```
+
 
 ## Available Commands
 
@@ -38,7 +50,6 @@ node app.js
 
 > **Note:** `<level>` can be `low`, `medium`, `high`, or `none` (use `none` to remove priority).
 
-
 ## Command Aliases (Shortcuts)
 
 You can use these shorter aliases instead of full command names:
@@ -57,7 +68,7 @@ You can use these shorter aliases instead of full command names:
 | `rm`  | `remove`      |
 | `u`   | `undo`        |
 | `se`  | `search`      |
-| `p`  	| `priority`    |
+| `p`   | `priority`    |
 
 Example: `todo> a Buy milk` works the same as `todo> add Buy milk`.
 
@@ -95,13 +106,13 @@ todo> exit
 # Saving tasks...
 # Saved 3 task(s) to tasks.json.
 # Goodbye.
-
 ```
 
 ## Notes
 
-- Tasks are stored in a file
+- Tasks are stored in a file (default `tasks.json`).
 - Task IDs restart after `clear`.
+- Use `-f <filename>` to change the task file.
 
 ## Future Improvements
 
