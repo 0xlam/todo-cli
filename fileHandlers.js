@@ -4,23 +4,13 @@ import { MAX_BACKUPS } from "./constants.js"
 async function loadTask(filename) {
     try {
         const data = await fs.readFile(filename, "utf8");
-        return data;
-    } 
-
-    catch (err) {
-        if (err.code === "ENOENT") {
-        	return null;
-        } 
-        else if (err.code === "EACCES") {
-            console.log(`Error: Permission denied – cannot read "${filename}".`);
-            return null;
-        } 
-        else {
-        	console.log(`Unexpected error while reading "${filename}":`, err);
-            return null;
-        }
+        return { ok: true, data: data };
     }
+    catch(err){
+        return { ok: false, error:err };
+    } 
 }
+
 
 async function writeTask(state, filename) {
     try {
