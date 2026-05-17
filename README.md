@@ -19,14 +19,21 @@ npm install
 ```
 3. Run the application:
 ```bash
-node app.js
+npm start
 ```
 
 ### Using a Custom Task File
 By default, tasks are stored in `tasks.json`. You can specify a different file using the `-f` or `--file` option:
 
 ```bash
-node app.js -f mytasks.json
+npm start -- --file mytasks.json
+npm start -- -f mytasks.json
+```
+
+Alternatively, you can run directly without npm:
+```bash
+node src/cli/app.js --file mytasks.json
+node src/cli/app.js -f mytasks.json
 ```
 
 
