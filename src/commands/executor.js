@@ -1,9 +1,9 @@
-import { state } from "./store.js"
+import { state } from "../state/store.js";
 import {  
     add, list, done, undo, remove,
     filter, edit, priority, clear,
     stats, search, help 
-} from "./taskOperations.js"
+} from "../operations/tasks.js";
 
 function executeCommand(parsed){
 

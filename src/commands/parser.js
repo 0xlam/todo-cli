@@ -1,12 +1,12 @@
-import { isWhitespace } from "./utils.js"
-import { isValidPriority } from "./validator.js"
+import { isWhitespace } from "../utils/helpers.js";
+import { isValidPriority } from "../utils/validator.js";
 import { 
     COMMAND_ALIASES, 
     NO_ARGS_COMMANDS, 
     REQUIRED_ARGS_COMMANDS,
     MAX_TASK_LENGTH,
     VALID_FILTER_STATUSES 
-} from "./constants.js"
+} from "../utils/constants.js";
 
 const NoArgs = NO_ARGS_COMMANDS;
 const ReqArgs = REQUIRED_ARGS_COMMANDS;

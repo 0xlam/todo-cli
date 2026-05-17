@@ -1,8 +1,8 @@
-import { isValidJson, validateTasks } from "./validator.js";
+import { isValidJson, validateTasks } from "../utils/validator.js";
 import { ask } from "./prompt.js";
-import { state } from "./store.js";
-import { loadTask, renameFile } from "./fileHandlers.js";
-import { DEFAULT_TASK_FILE } from "./constants.js";
+import { state } from "../state/store.js";
+import { loadTask, renameFile } from "../storage/fileHandlers.js";
+import { DEFAULT_TASK_FILE } from "../utils/constants.js";
 import { Command } from "commander";
 
 console.log("==========================");

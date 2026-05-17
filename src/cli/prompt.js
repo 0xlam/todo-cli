@@ -1,10 +1,10 @@
-import { isWhitespace } from "./utils.js"
-import { writeTask } from "./fileHandlers.js"
-import { state } from "./store.js"
-import { parseCommand } from "./commandParser.js"
-import { executeCommand } from "./commandExecutor.js"
-import { READONLY_COMMANDS } from "./constants.js"
-import readline from "readline"
+import { isWhitespace } from "../utils/helpers.js";
+import { writeTask } from "../storage/fileHandlers.js";
+import { state } from "../state/store.js";
+import { parseCommand } from "../commands/parser.js";
+import { executeCommand } from "../commands/executor.js";
+import { READONLY_COMMANDS } from "../utils/constants.js";
+import readline from "readline";
 
 const rl = readline.createInterface({
     input : process.stdin,
