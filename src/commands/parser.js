@@ -40,8 +40,7 @@ function parseCommand(input){
     
 
     if ( Object.hasOwn(commandAliases, command) ){
-        let cmd = commandAliases[command]; 
-        command = cmd;
+        command = commandAliases[command];
     }
     
     else if ( !TaskOps.includes(command) ){
