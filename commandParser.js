@@ -130,10 +130,7 @@ function parseCommand(input){
             }
 
             priority = text[prio_index + 1];
-
-            text = text.filter(w => w !== "--prio");
-            text = text.filter(w => w !== priority);
-            task_text = text.join(" ");
+            task_text = text.filter(w => w !== "--prio" && w !== priority).join(" ");
 
             if ( isWhitespace(task_text) ){
                 return{
